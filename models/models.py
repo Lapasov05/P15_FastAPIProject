@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, String, Integer, Text, Boolean, MetaData, TIMESTAMP, Date, ForeignKey
+from sqlalchemy import Table, Column, String, Integer, Text, Boolean, MetaData, TIMESTAMP, Date, ForeignKey, Float
 
 metadata = MetaData()
 
@@ -14,6 +14,7 @@ user = Table(
     Column('username', String),
     Column('password', String),
     Column('birth_date', Date),
+    Column('balance',Float,default=10000),
     Column('registered_date', TIMESTAMP, default=datetime.utcnow),
     Column('last_login', TIMESTAMP)
 )
