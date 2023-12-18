@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import BaseModel
 
 
@@ -9,6 +11,7 @@ class UserCreate(BaseModel):
     password2: str
     email: str
     phone: str
+    birth_date: date
 
 
 class User_In_db(BaseModel):
@@ -18,6 +21,8 @@ class User_In_db(BaseModel):
     password: str
     email: str
     phone: str
+    birth_date: date
+    balance: float
 
 
 class UserInfo(BaseModel):
@@ -26,6 +31,7 @@ class UserInfo(BaseModel):
     username: str
     email: str
     phone: str
+    balance: float
 
 
 class UserLogin(BaseModel):
