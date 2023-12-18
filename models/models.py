@@ -14,7 +14,7 @@ user = Table(
     Column('username', String),
     Column('password', String),
     Column('birth_date', Date),
-    Column('balance',Float,default=10000),
+    Column('balance', Float, default=10000),
     Column('registered_date', TIMESTAMP, default=datetime.utcnow),
     Column('last_login', TIMESTAMP)
 )
@@ -23,8 +23,15 @@ role = Table(
     'role',
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String),
-    Column('user_id', Integer, ForeignKey('user.id'))
+    Column('name', String)
+)
+
+is_admin = Table(
+    'is_admin',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', Integer, ForeignKey('user.id')),
+    Column('role_id', Integer, ForeignKey('role.id'))
 )
 
 product = Table(
@@ -49,37 +56,33 @@ user_saved_items = Table(
 comment = Table(
     'comment',
     metadata,
-    Column('id',Integer,primary_key=True,autoincrement=True),
-    Column('user_id',Integer,ForeignKey('user.id')),
-    Column('product_id',Integer,ForeignKey('product.id')),
-    Column('message',Text)
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', Integer, ForeignKey('user.id')),
+    Column('product_id', Integer, ForeignKey('product.id')),
+    Column('message', Text)
 )
-
-
 
 hashtags = Table(
     'hashtags',
     metadata,
-    Column('id',Integer,primary_key=True,autoincrement=True),
-    Column('name',String),
-    Column('product_id',ForeignKey('product.id'))
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String),
+    Column('product_id', ForeignKey('product.id'))
 )
-
 
 category = Table(
     'category',
     metadata,
-    Column('id',Integer,primary_key=True,autoincrement=True),
-    Column('name',String),
-    Column('product_id',ForeignKey('product.id'))
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String),
+    Column('product_id', ForeignKey('product.id'))
 )
-
 
 topic = Table(
 
     'topic',
     metadata,
-    Column('id',Integer,primary_key=True,autoincrement=True),
-    Column('name',String),
-    Column('product_id',ForeignKey('product.id'))
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String),
+    Column('product_id', ForeignKey('product.id'))
 )
