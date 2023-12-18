@@ -1,13 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
-app = FastAPI()
+from admin.admin import router_admin
+from auth.auth import user_register_router
+
+app = FastAPI(title="Group")
+router = APIRouter()
 
 
-@app.get("/")
+@router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello world"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app.include_router(router)
+app.include_router(user_register_router)
+app.include_router(router_admin)

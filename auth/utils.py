@@ -1,6 +1,9 @@
 import secrets
 import jwt
 from datetime import datetime, timedelta
+
+from jwt import PyJWTError
+
 from config import SECRET
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi import Depends, HTTPException
@@ -42,3 +45,20 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail='Token is expired!')
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail='Token invalid!')
+
+
+def get_user_role(token: str = Depends(security)):
+    try:
+        payload = jwt.decode(token.credentials, SECRET, algorithms=[algorithm])
+        role_id = payload.get("role_id")
+        return role_id
+    except PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+
+def is_admin(role_id: int = Depends(get_user_role)):
+    if role_id == 1:  # Assuming role ID 1 represents an admin
+        return True
+    else:
+        return False
+
