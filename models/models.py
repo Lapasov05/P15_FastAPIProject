@@ -67,7 +67,6 @@ hashtags = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String),
-    Column('product_id', ForeignKey('product.id'))
 )
 
 category = Table(
@@ -75,7 +74,6 @@ category = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String),
-    Column('product_id', ForeignKey('product.id'))
 )
 
 topic = Table(
@@ -84,5 +82,30 @@ topic = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String),
-    Column('product_id', ForeignKey('product.id'))
+)
+
+hashtag_id = Table(
+    'hashtag_id',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('hashtag_id', Integer, ForeignKey('hashtags.id')),
+    Column('product_id', Integer, ForeignKey('product.id'))
+)
+
+
+topic_id = Table(
+    'topic_id',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('topic_id', Integer, ForeignKey('hashtags.id')),
+    Column('product_id', Integer, ForeignKey('product.id'))
+)
+
+
+category_id = Table(
+    'category_id',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('category_id', Integer, ForeignKey('hashtags.id')),
+    Column('product_id', Integer, ForeignKey('product.id'))
 )

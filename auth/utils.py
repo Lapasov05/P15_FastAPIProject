@@ -1,12 +1,19 @@
 import secrets
+from sqlalchemy import select
+from sqlalchemy.future import select as async_select
+
 import jwt
 from datetime import datetime, timedelta
 
 from jwt import PyJWTError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import SECRET
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi import Depends, HTTPException
+
+from database import get_async_session
+from models.models import is_admin, role
 
 algorithm = 'HS256'
 security = HTTPBearer()
@@ -47,18 +54,28 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail='Token invalid!')
 
 
-def get_user_role(token: str = Depends(security)):
+def get_user_id_from_token(token: str):
     try:
-        payload = jwt.decode(token.credentials, SECRET, algorithms=[algorithm])
-        role_id = payload.get("role_id")
-        return role_id
-    except PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        payload = jwt.decode(token, SECRET, algorithms=[algorithm])
+        user_id = payload.get('user_id')
+        return user_id
+    except jwt.ExpiredSignatureError:
+        raise ValueError('Token is expired!')
+    except jwt.InvalidTokenError:
+        raise ValueError('Token invalid!')
 
 
-def is_admin(role_id: int = Depends(get_user_role)):
-    if role_id == 1:  # Assuming role ID 1 represents an admin
+async def is_admin_role(token: dict = Depends(verify_token), session: AsyncSession = Depends(get_async_session)):
+    user_id = get_user_id_from_token(token)  # Pass the secret and algorithm to the function
+    query = select(is_admin).where(is_admin.c.user_id == user_id)
+    result = await session.execute(query)
+    admin_role = result.scalar()
+
+    query2 = select(role).where(role.c.id == admin_role.role_id)
+    result_2 = await session.execute(query2)
+    admin_role_from_db = result_2.scalar()
+
+    if admin_role_from_db and admin_role_from_db.name == 'admin':  # Check if the role's name is 'admin'
         return True
-    else:
-        return False
 
+    raise HTTPException(status_code=404, detail='Not found')
