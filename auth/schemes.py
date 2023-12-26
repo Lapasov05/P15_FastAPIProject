@@ -31,7 +31,8 @@ class UserInfo(BaseModel):
     username: str
     email: str
     phone: str
-    balance: float
+    balance:float
+
 
 
 class UserLogin(BaseModel):
