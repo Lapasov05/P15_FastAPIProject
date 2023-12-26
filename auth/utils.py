@@ -5,6 +5,7 @@ from sqlalchemy.future import select as async_select
 import jwt
 from datetime import datetime, timedelta
 
+
 from jwt import PyJWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -52,7 +53,6 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail='Token is expired!')
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail='Token invalid!')
-
 
 def get_user_id_from_token(token: str):
     try:
