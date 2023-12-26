@@ -19,7 +19,7 @@ user_register_router = APIRouter()
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
-@user_register_router.post('/register')
+@user_register_router.post('/register', response_model=UserInfo)
 async def register(user_data: UserCreate, session: AsyncSession = Depends(get_async_session)):
     if user_data.password1 == user_data.password2:
         existing_username = await session.execute(select(user).where(user.c.username == user_data.username))
@@ -31,11 +31,11 @@ async def register(user_data: UserCreate, session: AsyncSession = Depends(get_as
             raise HTTPException(status_code=400, detail='Email already exists!')
 
         password = pwd_context.hash(user_data.password1)
-        user_in_db = User_In_db(**dict(user_data), password=password)
+        user_in_db = User_In_db(**dict(user_data), password=password, registered_date=datetime.now(), balance=10000)
         user_detail = insert(user).values(**dict(user_in_db))
         await session.execute(user_detail)
         await session.commit()
-        user_info = UserInfo(**dict(user_data))
+        user_info = UserInfo(**dict(user_in_db))
         return dict(user_info)
     else:
         raise HTTPException(status_code=401, detail='Passwords are not same !!!')

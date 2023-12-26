@@ -5,8 +5,10 @@ from sqlalchemy.future import select as async_select
 import jwt
 from datetime import datetime, timedelta
 
+
 from jwt import PyJWTError
 from sqlalchemy.ext.asyncio import AsyncSession
+
 
 from config import SECRET
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -54,6 +56,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail='Token invalid!')
 
 
+
 def get_user_id_from_token(token: str):
     try:
         payload = jwt.decode(token, SECRET, algorithms=[algorithm])
@@ -79,3 +82,4 @@ async def is_admin_role(token: dict = Depends(verify_token), session: AsyncSessi
         return True
 
     raise HTTPException(status_code=404, detail='Not found')
+
