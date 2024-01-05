@@ -92,7 +92,6 @@ hashtag_id = Table(
     Column('product_id', Integer, ForeignKey('product.id'))
 )
 
-
 topic_id = Table(
     'topic_id',
     metadata,
@@ -101,11 +100,18 @@ topic_id = Table(
     Column('product_id', Integer, ForeignKey('product.id'))
 )
 
-
 category_id = Table(
     'category_id',
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('category_id', Integer, ForeignKey('hashtags.id')),
+    Column('product_id', Integer, ForeignKey('product.id'))
+)
+
+user_bought_products = Table(
+    'user_bought_products',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', Integer, ForeignKey('user.id')),
     Column('product_id', Integer, ForeignKey('product.id'))
 )

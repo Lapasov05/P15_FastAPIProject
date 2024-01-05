@@ -38,3 +38,13 @@ class UserInfo(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+
+class UserSaveScheme(BaseModel):
+    product_id: int
+
+
+class UserInDB(BaseModel):
+    user_id: int
+    product_id: int
+    created_at: datetime
