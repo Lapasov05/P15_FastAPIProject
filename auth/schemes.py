@@ -40,7 +40,6 @@ class UserLogin(BaseModel):
 
 
 class UserSaveScheme(BaseModel):
-    user_id: int
     product_id: int
 
 

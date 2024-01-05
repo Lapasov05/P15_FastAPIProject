@@ -86,3 +86,12 @@ topic = Table(
     Column('name', String),
     Column('product_id', ForeignKey('product.id'))
 )
+
+user_bought_products = Table(
+    'user_bought_products',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', Integer, ForeignKey('user.id')),
+    Column('product_id', Integer, ForeignKey('product.id'))
+)
+
