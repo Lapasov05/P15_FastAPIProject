@@ -41,7 +41,10 @@ product = Table(
     Column('name', String),
     Column('owner_id', Integer, ForeignKey('user.id')),
     Column('price', Integer, default=0),
-    Column('sold_count', Integer, default=0)
+    Column('sold_count', Integer, default=0),
+    Column('category', Integer, default=0),
+    Column('topic', Integer, default=0),
+    Column('compatible', String),
 )
 
 user_saved_items = Table(
@@ -75,7 +78,7 @@ category = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String),
-    Column('product_id', ForeignKey('product.id'))
+    Column('product_count', Integer, default=0)
 )
 
 topic = Table(
@@ -84,5 +87,23 @@ topic = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String),
-    Column('product_id', ForeignKey('product.id'))
+    Column('product_count', Integer, default=0)
+)
+
+
+compatible = Table(
+    'compatible',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String),
+    Column('product_count', Integer, default=0)
+)
+
+files = Table(
+    'files',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('files', String),
+    Column('product_id', ForeignKey('product.id')),
+    Column('hash', String)
 )
