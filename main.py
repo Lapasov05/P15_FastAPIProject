@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter
 
 from admin.admin import router_admin
-from auth.auth import user_register_router
+from auth.auth import user_register_router, user_information
 
 app = FastAPI(title="Group")
 router = APIRouter()
@@ -14,4 +14,5 @@ async def root():
 
 app.include_router(router)
 app.include_router(user_register_router)
+app.include_router(user_information)
 app.include_router(router_admin)
