@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -31,9 +31,20 @@ class UserInfo(BaseModel):
     username: str
     email: str
     phone: str
-    balance: float
+    balance:float
+
 
 
 class UserLogin(BaseModel):
     username: str
     password: str
+
+
+class UserSaveScheme(BaseModel):
+    product_id: int
+
+
+class UserInDB(BaseModel):
+    user_id: int
+    product_id: int
+    created_at: datetime
