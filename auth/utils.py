@@ -9,10 +9,6 @@ from datetime import datetime, timedelta
 from jwt import PyJWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 342e176b97711ea9999d48c4c4f9193566fa9f0e
 from config import SECRET
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi import Depends, HTTPException
@@ -57,11 +53,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         raise HTTPException(status_code=401, detail='Token is expired!')
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail='Token invalid!')
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 342e176b97711ea9999d48c4c4f9193566fa9f0e
 
 def get_user_id_from_token(token: str):
     try:
@@ -88,7 +80,4 @@ async def is_admin_role(token: dict = Depends(verify_token), session: AsyncSessi
         return True
 
     raise HTTPException(status_code=404, detail='Not found')
-<<<<<<< HEAD
 
-=======
->>>>>>> 342e176b97711ea9999d48c4c4f9193566fa9f0e
