@@ -4,8 +4,6 @@ from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.utils import verify_token
-
 from auth.utils import verify_token, is_admin_role
 from database import get_async_session
 from models.models import user
