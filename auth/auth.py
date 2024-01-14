@@ -8,12 +8,13 @@ from sqlalchemy.exc import NoResultFound
 from fastapi import Depends, APIRouter, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
+from typing import List
 
 from auth.utils import generate_token, verify_token
 from database import get_async_session
 from models.models import user, user_saved_items, is_admin, role, user_bought_products, product
 
-from auth.schemes import UserInfo, UserCreate, User_In_db, UserLogin, UserInDB, UserSaveScheme
+from auth.schemes import UserInfo, UserCreate, User_In_db, UserLogin, UserInDB, UserSaveScheme, GetUser
 
 user_register_router = APIRouter()
 user_information = APIRouter()
@@ -69,6 +70,46 @@ async def user_info(token: dict = Depends(verify_token), session: AsyncSession =
         return UserInfo(**user_data._asdict())
     except NoResultFound:
         raise HTTPException(status_code=404, detail='User not found !!!')
+
+
+@user_information.get('/get-saved-items', response_model=List[GetUser])
+async def getting(token: dict = Depends(verify_token), session: AsyncSession = Depends(get_async_session)):
+    if token is None:
+        raise HTTPException(status_code=401, detail='No Registered')
+    users_id = token.get('user_id')
+    query = select(user_saved_items.c.product_id).where(user_saved_items.c.user_id == users_id)
+    sub1 = await session.execute(query)
+    products = sub1.all()
+    res = []
+    for prod_id, in products:
+        query2 = select(product).where(product.c.id == prod_id)
+        data = await session.execute(query2)
+        prod_data_list = data.all()
+
+        for prod_data in prod_data_list:
+            res.append({'id': prod_data.id, 'name': prod_data.name, 'price': prod_data.price})
+
+    return res
+
+
+@user_information.get('/get-purchases', response_model=List[GetUser])
+async def get_purchases(token: dict = Depends(verify_token), session: AsyncSession = Depends(get_async_session)):
+    if token is None:
+        raise HTTPException(status_code=401, detail='No Registered')
+    users_id = token.get('user_id')
+    query = select(user_bought_products.c.product_id).where(user_bought_products.c.user_id == users_id)
+    execute1 = await session.execute(query)
+    all1 = execute1.all()
+    response1 = []
+    for prod, in all1:
+        query2 = select(product).where(product.c.id == prod)
+        execute2 = await session.execute(query2)
+        all2 = execute2.all()
+
+        for final in all2:
+            response1.append({'id': final.id, 'name': final.name, 'price': final.price})
+
+    return response1
 
 
 @user_information.post('/user-purchase')

@@ -48,3 +48,9 @@ class UserInDB(BaseModel):
     user_id: int
     product_id: int
     created_at: datetime
+
+
+class GetUser(BaseModel):
+    id: int
+    name: str
+    price: float
