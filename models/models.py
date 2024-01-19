@@ -45,7 +45,10 @@ product = Table(
     Column('category', Integer, default=0),
     Column('topic', Integer, default=0),
     Column('compatible', String),
+    Column('hashcode', String),
+    Column('files_name', String),
 )
+
 
 user_saved_items = Table(
     'user_saved_items',
