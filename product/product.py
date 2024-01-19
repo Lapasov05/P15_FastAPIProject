@@ -134,14 +134,24 @@ async def upload_files(product_id: int, upload_file: UploadFile, token: dict = D
 
 
 @product_details.post('/product')
-async def product_add(blog: ProductAdd, token: dict = Depends(verify_token),
+async def product_add(upload_file: UploadFile, blog: ProductAdd = Depends(), token: dict = Depends(verify_token),
                       session: AsyncSession = Depends(get_async_session)):
     user_id = token.get('user_id')
     if token is not None:
-        query = insert(product).values(owner_id=user_id, **dict(blog))
-        await session.execute(query)
-        await session.commit()
-        return {'success': True, 'message': 'Product added!'}
+        name = upload_file.filename
+        out_file = f'files/products/{name}'
+        if name.split('.')[-1] == 'zip':
+            async with aiofiles.open(out_file, 'wb') as zipf:
+                content = await upload_file.read()
+                await zipf.write(content)
+            hashcode = secrets.token_hex(32)
+            query = insert(product).values(owner_id=user_id, files_name=name, hashcode=hashcode, **dict(blog))
+            await session.execute(query)
+            await session.commit()
+            return {'success': True, 'message': 'Product added!'}
+        else:
+            return {'success': False, 'message': 'File type is not zip!'}
+
 
 
 @product_details.get('/product', response_model=List[ProductGet])
@@ -204,7 +214,7 @@ async def download_files(hashcode: str, token: dict = Depends(verify_token),
     if token is not None:
         if hashcode is None:
             raise HTTPException(status_code=404, detail='Invalid hashcode')
-        query = select(files).where(files.c.hash == hashcode)
+        query = select(product).where(product.c.hash == hashcode)
         files__data = await session.execute(query)
         files_data = files__data.one()
         file_url = f'C:/P15_FastAPIProject/files/products/{files_data.files}'
